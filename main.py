@@ -92,19 +92,19 @@ class Beam:
         #for particle in Particle.all_particles:
             #if particle.check_collide(self.x,self.y):
                 #Sim.line_obj.append(Line(win,(0,0,0),particle.start,(self.x,self.y)))
-        self.red = 255
+        self.red = color[0]
         self.color = color
         self.active = 1
         Beam.all_beams.append(self)
     
     def make_step(self):
-        global mirror_kef,generation_y
+        global mirror_kef,generation_y,step_divader, layer_roof
         if not self.active: return 0
-        if self.power < 0.00001 or self.y < generation_y: 
+        if self.power < 0.00001 or (self.y < layer_roof and self.red != 255): 
             self.active = 0
             return 0
-        self.x += mh.cos(self.angle)/10
-        self.y += mh.sin(self.angle)/10
+        self.x += mh.cos(self.angle)/step_divader
+        self.y += mh.sin(self.angle)/step_divader
 
         for particle in Particle.all_particles:
             #если напоролись на частицу, берем угол от точки где столкнулись
@@ -243,13 +243,13 @@ def random_generate():
         Particle((randint(r,W-r),randint(minY, maxY)), r)
 
 def random_generate_in_layer():
-    global min_r,max_r,layer_roof,layer_bottom
+    global min_r,max_r,layer_roof,layer_bottom,powder_width
     n_inner_Layers = layer_thick//(max_r*2)
     
     x = 0
     thislayer_y = layer_roof+max_r
     for i in range(n_inner_Layers):
-        while x<W:
+        while x<powder_width:
             r = randint(min_r, max_r)
             Particle((x,thislayer_y), r)
             x += max_r*2
@@ -285,17 +285,20 @@ if __name__ == "__main__":
     #пока без распределения просто рандом от и до
 
     mirror_kef = 0.4 #кеф отражения
-    n_beam = 100 #количество лучей
+    n_beam = 8000 #количество лучей
+    powder_width = 8000
     all_power = 1.6 #мощь всех лучей
+    step_divader = 1
 
     win = display.set_mode([W,H],flags=FULLSCREEN)
     one = Sim(win,W,H)
 
-    generate_from_pic("testpic.jpg")
-    sherloc = Detector(0, layer_bottom+50, W)
-    
+    #generate_from_pic("testpic.jpg")
+
+    sherloc = Detector(0, layer_bottom, powder_width)
+    random_generate_in_layer()
     for i in range(0,n_beam):
-        Beam((W/2-n_beam/2+i,generation_y), 90, all_power/n_beam)
+        Beam((i,generation_y), 90, all_power/n_beam)
 
     one.when_start()
     while True:

@@ -29,7 +29,7 @@ class Sim():
         #self.FPS = 60
 
     def when_start(self):
-        print("я запустилась",standarttime.clock()//60)
+        print("я запустилась",standarttime.time()//60)
         self.run = True
     
     def game(self):
@@ -259,12 +259,13 @@ if __name__ == "__main__":
     f = open("results.txt","a")
     f.write("\n")
     f.close()
+    start_min_r = 4
     max_r = 25
     
     #пока без распределения просто рандом от и до
-    for min_r in range(4,max_r-1):
+    for min_r in range(start_min_r,max_r-1):
         timeend = False
-        for thikness in range(200,min_r*2,-8):
+        for thikness in range(50,100):
             if timeend: break
             time_start = standarttime.time()
             W = 1920
@@ -276,9 +277,10 @@ if __name__ == "__main__":
             layer_bottom = layer_roof + layer_thick
 
             mirror_kef = 0.4 #кеф отражения
-            n_beam = 100 #количество лучей
+            n_beam = 8000 #количество лучей
             all_power = 1.6 #мощь всех лучей
 
+            powder_width = 8000
             #win = display.set_mode([W,H],flags=FULLSCREEN)
             one = Sim(W,H)
             
@@ -295,7 +297,7 @@ if __name__ == "__main__":
             x = 0
             thislayer_y = layer_roof+max_r
             for i in range(n_inner_Layers):
-                while x<W:
+                while x<powder_width:
                     r = randint(min_r, max_r)
                     Particle((x,thislayer_y), r)
                     x += max_r*2
@@ -308,7 +310,7 @@ if __name__ == "__main__":
             sherloc = Detector(0, layer_bottom, W)
             
             for i in range(0,n_beam):
-                Beam((W/2-n_beam/2+i,generation_y), 90, all_power/n_beam)
+                Beam((0,generation_y), 90, all_power/n_beam)
 
             one.when_start()
             timeend = False
