@@ -406,9 +406,9 @@ if __name__ == "__main__":
     H = 1080
     start_laser = False
 
-    layer_roof = 300 #верх слоя (координата Y кверхногами, тоесть 300px от верха окна)
+    layer_roof = 30 #верх слоя (координата Y кверхногами, тоесть 300px от верха окна)
     generation_y = layer_roof - 20
-    layer_thick = 150 #толщина слоя
+    layer_thick = 250 #толщина слоя
     layer_bottom = layer_roof + layer_thick
     
     #min_r = 10 #мин и макс радиусы
